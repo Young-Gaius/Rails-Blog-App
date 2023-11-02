@@ -1,1 +1,0 @@
-# Rails-Blog-App
