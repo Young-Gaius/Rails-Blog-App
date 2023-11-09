@@ -75,7 +75,7 @@ Clone this repository to your desired folder:
 
 ```sh
   cd my-folder
-  gh repo clone https://github.com/Wils-FOURR-speed/Blog-App-Project.git
+  gh repo clone https://github.com/Young-Gaius/Rails-Blog-App.git
 ```
 
 ### Install
@@ -95,10 +95,10 @@ rspec spec --format documentation
 
 ## 👥 Authors <a name="authors"></a>
 
-👤 WILSAN
-- GitHub: [@githubhandle](https://github.com/Wils-FOURR-speed)
-- Twitter: [@twitterhandle](https://twitter.com/WFourrspeed)
-- LinkedIn: [LinkedIn](https://www.linkedin.com/in/nji-wilsan-ndenge-47b7a826a/)
+👤 Young
+- GitHub: [@githubhandle](https://github.com/Young-Gaius)
+- Twitter: [@twitterhandle](https://twitter.com/YoungEhu)
+- LinkedIn: [LinkedIn](https://www.linkedin.com/in/Young-Gaius)
 
 
 <!-- FUTURE FEATURES -->
@@ -118,7 +118,7 @@ Features will be added to the project.
 ## 🤝 Contributing <a name="contributing"></a>
 
 Contributions, issues, and feature requests are welcome!
-Feel free to check the <a href="https://github.com/Wils-FOURR-speed/Blog-App-Project/issues">Issues</a>.
+Feel free to check the <a href="https://github.com/Young-Gaius/Rails-Blog-App/issues">Issues</a>.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
