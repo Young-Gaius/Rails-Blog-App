@@ -97,8 +97,6 @@ rspec spec --format documentation
 
 👤 Young
 - GitHub: [@githubhandle](https://github.com/Young-Gaius)
-- Twitter: [@twitterhandle](https://twitter.com/YoungEhu)
-- LinkedIn: [LinkedIn](https://www.linkedin.com/in/Young-Gaius)
 
 
 <!-- FUTURE FEATURES -->
