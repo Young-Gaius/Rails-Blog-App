@@ -1,0 +1,11 @@
+first_user = User.create(name: 'Tom', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Teacher from Mexico.')
+# first_user = User.create(name: 'Tom', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Teacher from Mexico.')
+# second_user = User.create(name: 'Lilly', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Teacher from Poland.')
+# third_user = User.create(name: 'Alan', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Singer from Mexico.')
+# fourth_user = User.create(name: 'Alan', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Singer from Mexico.')
+@@ -27,4 +27,4 @@ first_user = User.create(name: 'Tom', photo: 'https://unsplash.com/photos/F_-0Bx
+
+# User.find_by(bio: 'Teacher from Poland.').delete
+# Post.find_by(title: 'I am not a techer').delete
+# Comment.where(user: second_user).destroy_all
+# Comment.where(user: second_user).destroy_all
