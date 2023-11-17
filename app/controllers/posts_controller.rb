@@ -1,43 +1,43 @@
 class PostsController < ApplicationController
-  before_action :find_user, only: %i[index show like unlike]
-  before_action :find_post, only: %i[show like unlike]
+  before_action :find_post, only: [:show]
+  before_action :initialize_like
 
   def index
-    @posts = @user.posts
+    @user = User.find(params[:user_id])
+    @posts = Post.where(author_id: params[:user_id])
   end
 
-  def show; end
+  def show
+    @post = Post.find(params[:id])
+  end
 
   def new
-    @user = current_user
-    @post = @user.posts.new
+    @user = User.find(params[:user_id])
+    @post = @user.posts.build
   end
 
   def create
-    @post = current_user.posts.new(post_params)
+    @user = User.find(params[:user_id])
+    @post = @user.posts.build(post_params)
+
     if @post.save
-      flash[:notice] = 'Post created successfully.'
-      redirect_to user_path(current_user)
+      redirect_to user_post_path(@user, @post), notice: 'Post was successfully created.'
     else
-      render 'new'
+      render :new
     end
   end
 
   private
 
-  def find_user
-    @user = User.find(params[:user_id])
+  def post_params
+    params.require(:post).permit(:title, :text)
   end
 
   def find_post
-    @post = @user.posts.find_by(id: params[:id])
-    return unless @post.nil?
-
-    flash[:alert] = 'Post not found, back to posts page'
-    redirect_to user_posts_path(@user)
+    @post = Post.find(params[:id])
   end
 
-  def post_params
-    params.require(:post).permit(:title, :text)
+  def initialize_like
+    @like = Like.new
   end
 end

@@ -1,23 +1,13 @@
-<div class="page-container">
-  <a href="<%= user_path(@user) %>" class="back-link">
-    <button id="back-btn">⬅</button>
-  </a>
+<%= link_to 'Back', user_posts_path(@user) %>
+<h1>Create a new post</h1>
 
-  <h1>Create a New Post</h1>
+<%= form_with(model: [@user, @post], url: user_posts_path(@user)) do |form| %>
+  <%= form.label :title %>
+  <%= form.text_field :title %>
 
-  <%= form_with model: [@user, @post], local: true, html: { class: 'post-form' } do |form| %>
-    <div class="field">
-      <%= form.label :title, class: 'form-label' %>
-      <%= form.text_field :title, class: 'form-input' %>
-    </div>
+  <%= form.label :text %>
+  <%= form.text_area :text %>
 
-    <div class="field">
-      <%= form.label :text, class: 'form-label' %>
-      <%= form.text_area :text, class: 'form-textarea' %>
-    </div>
+  <%= form.submit "Create Post" %>
+<% end %>
 
-    <div class="actions">
-      <%= form.submit 'Create Post', class: 'submit-btn' %>
-    </div>
-  <% end %>
-</div>
