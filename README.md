@@ -98,6 +98,12 @@ rspec spec --format documentation
 👤 Young
 - GitHub: [@githubhandle](https://github.com/Young-Gaius)
 
+👤 **Evans Karanja**
+
+- GitHub: [@githubhandle](https://github.com/prg-04)
+- Twitter: [@twitterhandle](https://twitter.com/Evans1425Sean)
+- LinkedIn: [LinkedIn](https://www.linkedin.com/in/evanson-karanja/)
+
 
 <!-- FUTURE FEATURES -->
 
