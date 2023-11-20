@@ -1,30 +1,37 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  it 'is valid with a name and a non-negative posts_counter' do
-    user = User.new(name: 'Tom', posts_counter: 0)
-    expect(user).to be_valid
+  subject { User.new(name: 'John') }
+
+  before { subject.save }
+
+  describe 'validation tests' do
+    it 'name should be present' do
+      subject.name = nil
+      expect(subject).to_not be_valid
+    end
+
+    it 'posts_counter should be an integer' do
+      subject.posts_counter = 'hey'
+      expect(subject).to_not be_valid
+    end
+
+    it 'posts_counter should be greater than or equal to zero' do
+      subject.posts_counter = -2
+      expect(subject).to_not be_valid
+      subject.posts_counter = 0
+      expect(subject).to be_valid
+    end
   end
 
-  it 'is not valid without a name' do
-    user = User.new(name: nil)
-    user.valid?
-    expect(user.errors[:name]).to include("can't be blank")
-  end
-
-  it 'is not valid with a negative posts_counter' do
-    user = User.new(name: 'Tom', posts_counter: -1)
-    user.valid?
-    expect(user.errors[:posts_counter]).to include('must be greater than or equal to 0')
-  end
-
-  it 'returns the 3 most recent posts for a user' do
-    user = User.create(name: 'Tom')
-    4.times { Post.create(author: user, title: 'My Post') }
-
-    recent_posts = user.recent_posts
-
-    expect(recent_posts.count).to eq(3)
-    expect(recent_posts.first).to eq(user.posts.last)
+  describe '#recent_posts' do
+    it 'returns the 3 most recent posts' do
+      user = User.create(name: 'Alice')
+      post1 = Post.create(title: 'Post 1', author: user, created_at: 4.days.ago)
+      post2 = Post.create(title: 'Post 2', author: user, created_at: 3.days.ago)
+      post3 = Post.create(title: 'Post 3', author: user, created_at: 2.days.ago)
+      rec_posts = user.recent_posts
+      expect(rec_posts).to eq([post3, post2, post1])
+    end
   end
 end

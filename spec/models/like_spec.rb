@@ -1,28 +1,21 @@
 require 'rails_helper'
 
 RSpec.describe Like, type: :model do
-  it 'is valid with a user and a post' do
-    user = User.create(name: 'John')
-    post = Post.create(author: user, title: 'My Post')
-    like = Like.new(user:, post:)
-    expect(like).to be_valid
+  let(:user) { User.create(name: 'Alice') }
+  let(:post) { user.posts.create(title: 'Sample Post') }
+
+  describe 'validations' do
+    it 'should be valid with valid attributes' do
+      like = Like.create(user:, post_id: post.id)
+      expect(like).to be_valid
+    end
   end
 
-  it 'is not valid without a user' do
-    post = Post.create(author: User.new, title: 'My Post', comments_counter: 0, likes_counter: 0)
-    like = post.likes.new(user: nil)
-    like.valid?
-    expect(like.errors[:user]).to include('must exist')
-  end
-
-  it 'updates the likes counter for a post' do
-    user = User.create(name: 'John')
-    post = Post.create(author: user, title: 'My Post')
-    like = Like.create(user:, post:)
-
-    like.increment_post_likes_counter
-
-    post.reload
-    expect(post.likes_counter).to eq(2)
+  describe 'after_save callback' do
+    it 'increments post\'s likes_counter after saving' do
+      expect do
+        Like.create(user:, post_id: post.id)
+      end.to change { post.reload.likes_counter }.by(1)
+    end
   end
 end

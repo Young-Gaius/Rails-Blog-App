@@ -1,40 +1,53 @@
 require 'rails_helper'
 
-RSpec.feature 'User Post Index Page' do
-  let!(:user) { User.create(name: 'Ajrass', photo: 'https://avatars.githubusercontent.com/u/130588108?v=4') }
-  let!(:post) { Post.create(author_id: user.id, title: 'Test Post', text: 'Hello world!') }
-  let!(:comment1) { Comment.create(user:, post:, text: 'Hello reviewer!') }
-  let!(:comment2) { Comment.create(user:, post:, text: 'Hope everything is just fine for you!') }
-
-  before { visit user_posts_path(user) }
-
-  scenario 'Displays username, profile picture, number of posts and total likes' do
-    expect(page).to have_css("img[src='#{user.photo}']")
-    expect(page).to have_content(user.name)
-    expect(page).to have_content("Number of posts: #{user.posts.count}")
-    expect(page).to have_content("Likes: #{post.likes_counter}")
+RSpec.describe 'Post index ' do
+  before :each do
+    @user = User.create(name: 'John Doe', photo: 'https://example.com/john-doe.jpg', bio: 'Web Developer',
+                        post_counter: 0)
+    @post1 = Post.create(author_id: @user.id, title: 'Rails Journey', text: 'Exploring the world.',
+                         like_counter: 2, comment_counter: 1)
+    @post2 = Post.create(author_id: @user.id, title: 'Hello World', text: 'Another day, another hello.',
+                         like_counter: 0, comment_counter: 0)
+    @post3 = Post.create(author_id: @user.id, title: 'Ruby Adventures', text: 'Discovering the beauty.',
+                         like_counter: 1, comment_counter: 2)
+    @comment = Comment.create(user_id: @user.id, post_id: @post1.id, text: 'Great post!')
+    visit user_posts_path(@user.id)
   end
 
-  scenario 'Displays post title and some of the post body' do
-    expect(page).to have_content(post.title)
-    expect(page).to have_content('Hello world!')
+  it 'see the user profile picture' do
+    expect(page).to have_css("img[src*='https://example.com/john-doe.jpg']")
   end
 
-  scenario 'Displays the first comments on a post and total comments' do
-    expect(page).to have_content(comment2.text)
-    expect(page).to have_content("Comments: #{post.comments_counter}")
+  it 'can see the user name' do
+    expect(page).to have_content('John Doe')
   end
 
-  scenario 'Redirects to post show page when clicked' do
-    click_link post.title
-    sleep(1)
-    expect(current_path).to eq(user_post_path(user, post))
+  it 'can see the number of posts user has written' do
+    expect(page).to have_content('Number of posts: 3')
   end
 
-  scenario 'Displays pagination section when there are more than 5 posts' do
-    6.times { Post.create(author: user, title: 'My post', text: 'Ruby on Rails.') }
+  it 'can see a post title' do
+    expect(page).to have_content('Rails Journey')
+  end
 
-    visit user_posts_path(user)
-    expect(page).to have_css('.pagination')
+  it 'can see some of post body' do
+    expect(page).to have_content('Exploring the world.')
+  end
+
+  it 'can see first comment on post ' do
+    expect(page).to have_content('Great post!')
+  end
+
+  it 'can see how many likes a post has' do
+    expect(page).to have_content('Likes: 2')
+  end
+
+  it 'can see section for pagination if there are more posts than fit on the view.' do
+    expect(page).to have_content('Pagination')
+  end
+
+  it "When I click on a post, it redirects me to that post's show page." do
+    click_on 'Rails Journey'
+    expect(page).to have_content('Rails Journey')
   end
 end

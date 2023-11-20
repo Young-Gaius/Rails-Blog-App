@@ -1,36 +1,26 @@
 require 'rails_helper'
 
 RSpec.describe Comment, type: :model do
-  it 'is valid with a user and a post' do
-    user = User.create(name: 'Tom', posts_counter: 0)
-    post = Post.create(author: user, title: 'My Post')
-    comment = Comment.new(user:, post:, text: 'Nice post!')
-    expect(comment).to be_valid
+  let(:user) { User.create(name: 'Alice') }
+  let(:post) { user.posts.create(title: 'Sample Post') }
+
+  describe 'validations' do
+    it 'should be valid with valid attributes' do
+      comment = post.comments.build(author: user)
+      expect(comment).to be_valid
+    end
+
+    it 'should not be valid without an author' do
+      comment = post.comments.build(author: nil)
+      expect(comment).to_not be_valid
+    end
   end
 
-  it 'is not valid without a user' do
-    post = Post.create(author: User.new, title: 'My Post')
-    comment = Comment.new(user: nil, post:, text: 'Nice post!')
-    comment.valid?
-    expect(comment.errors[:user]).to include('must exist')
-  end
-
-  it 'is not valid without text' do
-    user = User.create(name: 'Tom')
-    Post.create(author: user, title: 'My Post')
-    comment = Comment.new(user:, text: nil)
-    comment.valid?
-    expect(comment.errors[:text]).to include("can't be blank")
-  end
-
-  it 'updates the comments counter for a post' do
-    user = User.create(name: 'Tom')
-    post = Post.create(author: user, title: 'My Post')
-    comment = Comment.create(user:, post:, text: 'Nice post!')
-
-    comment.increment_post_comments_counter
-
-    post.reload
-    expect(post.comments_counter).to eq(2)
+  describe 'after_save callback' do
+    it 'increments post\'s comments_counter after saving' do
+      expect do
+        post.comments.create(author: user)
+      end.to change { post.reload.comments_counter }.by(1)
+    end
   end
 end

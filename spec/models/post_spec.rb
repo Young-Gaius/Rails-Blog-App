@@ -1,58 +1,57 @@
 require 'rails_helper'
 
 RSpec.describe Post, type: :model do
-  it 'is valid with a title, comments_counter, and likes_counter within valid ranges' do
-    user = User.create(name: 'Tom')
-    post = Post.new(author: user, title: 'My Post', comments_counter: 0, likes_counter: 0)
-    expect(post).to be_valid
+  let(:user) { User.create(name: 'Test User') }
+
+  describe 'validations' do
+    it 'should be valid with valid attributes' do
+      post = user.posts.build(title: 'Test Post')
+      expect(post).to be_valid
+    end
+
+    it 'should not be valid without a title' do
+      post = user.posts.build(title: nil)
+      expect(post).to_not be_valid
+    end
+
+    it 'should not be valid with a title exceeding 250 characters' do
+      long_title = 'a' * 251
+      post = user.posts.build(title: long_title)
+      expect(post).to_not be_valid
+    end
+
+    it 'should have a comments_counter greater than or equal to 0' do
+      post = user.posts.build(title: 'Test Post', comments_counter: -1)
+      expect(post).to_not be_valid
+      post.comments_counter = 0
+      expect(post).to be_valid
+    end
+
+    it 'should have a likes_counter greater than or equal to 0' do
+      post = user.posts.build(title: 'Test Post', likes_counter: -1)
+      expect(post).to_not be_valid
+      post.likes_counter = 0
+      expect(post).to be_valid
+    end
   end
 
-  it 'is not valid without a title' do
-    User.create(name: 'Tom')
-    post = Post.new(title: nil)
-    post.valid?
-    expect(post.errors[:title]).to include("can't be blank")
+  describe '#recent_comments' do
+    it 'returns the specified number of most recent comments' do
+      post = user.posts.create(title: 'Test Post')
+      post.comments.create(text: 'Comment 1', author: user)
+      comment2 = post.comments.create(text: 'Comment 2', author: user)
+      comment3 = post.comments.create(text: 'Comment 3', author: user)
+
+      recent_comments = post.recent_comments(2)
+      expect(recent_comments).to eq([comment3, comment2])
+    end
   end
 
-  it 'is not valid with a title exceeding 250 characters' do
-    user = User.create(name: 'Tom')
-    post = Post.new(author: user, title: 'A' * 251)
-    post.valid?
-    expect(post.errors[:title]).to include('is too long (maximum is 250 characters)')
-  end
-
-  it 'is not valid with a negative comments_counter' do
-    user = User.create(name: 'Tom')
-    post = Post.new(author: user, title: 'My Post', comments_counter: -1)
-    post.valid?
-    expect(post.errors[:comments_counter]).to include('must be greater than or equal to 0')
-  end
-
-  it 'is not valid with a negative likes_counter' do
-    User.create(name: 'Tom')
-    post = Post.new(title: 'My Post', likes_counter: -1)
-    post.valid?
-    expect(post.errors[:likes_counter]).to include('must be greater than or equal to 0')
-  end
-
-  it 'updates the posts counter for a user' do
-    user = User.create(name: 'Tom', posts_counter: 0)
-    post = Post.create(author: user, title: 'My Post')
-
-    post.increment_user_posts_counter
-
-    user.reload
-    expect(user.posts_counter).to eq(2)
-  end
-
-  it 'returns the 5 most recent comments for a post' do
-    user = User.create(name: 'Tom')
-    post = Post.create(author: user, title: 'My Post')
-    6.times { Comment.create(user:, post:, text: 'Nice post!') }
-
-    recent_comments = post.recent_comments
-
-    expect(recent_comments.count).to eq(5)
-    expect(recent_comments.first).to eq(post.comments.last)
+  describe 'after_save callback' do
+    it 'increments author\'s posts_counter after saving' do
+      expect do
+        user.posts.create(title: 'Test Post')
+      end.to change { user.reload.posts_counter }.by(1)
+    end
   end
 end

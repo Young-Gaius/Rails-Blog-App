@@ -1,38 +1,48 @@
 require 'rails_helper'
 
-RSpec.feature 'Post Show Page' do
-  let!(:user1) { User.create(name: 'Ajrass', photo: 'https://avatars.githubusercontent.com/u/130588108?v=4') }
-  let!(:post1) { Post.create(author_id: user1.id, title: 'Test post 1', text: 'Ruby on Rails.') }
-  let!(:comment1) { Comment.create(user: user1, post: post1, text: 'Hello there!') }
-  let!(:comment2) { Comment.create(user: user1, post: post1, text: 'Hi everyone!') }
-
-  scenario 'Displays post title and author' do
-    visit user_post_path(user1, post1)
-    expect(page).to have_content(post1.title)
-    expect(page).to have_content(user1.name)
+RSpec.describe 'Post show' do
+  before :each do
+    @user = User.create(name: 'John Doe', photo: 'https://example.com/john-doe.jpg', bio: 'Web Developer',
+                        post_counter: 0)
+    @post1 = Post.create(author_id: @user.id, title: 'Rails Journey', text: 'Exploring the world of Rails development.',
+                         like_counter: 0, comment_counter: 0)
+    @post2 = Post.create(author_id: @user.id, title: 'Hello World', text: 'Another day, another hello.',
+                         like_counter: 0, comment_counter: 0)
+    @post3 = Post.create(author_id: @user.id, title: 'Ruby Adventures', text: 'Discovering the beauty.',
+                         like_counter: 0, comment_counter: 0)
+    @comment1 = Comment.create(user_id: @user.id, post_id: @post1.id, text: 'Great post!')
+    @comment2 = Comment.create(user_id: @user.id, post_id: @post1.id, text: 'I learned a lot.')
+    @like = Like.create(user_id: @user.id, post_id: @post1.id)
+    visit user_post_path(@user.id, @post1.id)
   end
 
-  scenario 'Displays how many comments and likes the post has' do
-    visit user_post_path(user1, post1)
-    expect(page).to have_content("Comments: #{post1.comments.count}")
-    expect(page).to have_content("Likes: #{post1.likes.count}")
+  it 'see the post title' do
+    expect(page).to have_content('Rails Journey')
   end
 
-  scenario 'Displays the post body' do
-    visit user_post_path(user1, post1)
-
-    expect(page).to have_content('Ruby on Rails.')
+  it 'see who wrote the post' do
+    expect(page).to have_content('John Doe')
   end
 
-  scenario 'Displays the username of each commentator' do
-    visit user_post_path(user1, post1)
-    expect(page).to have_content(comment1.user.name)
-    expect(page).to have_content(comment2.user.name)
+  it 'see how many comments it has' do
+    expect(page).to have_content('Comments: 2')
   end
 
-  scenario 'Displays the comment left by each commentor' do
-    visit user_post_path(user1, post1)
-    expect(page).to have_content(comment1.text)
-    expect(page).to have_content(comment2.text)
+  it 'see how many likes it has' do
+    expect(page).to have_content('Likes: 1')
+  end
+
+  it 'see the post body' do
+    expect(page).to have_content('Exploring the world of Rails development.')
+  end
+
+  it 'see the username of each commentator' do
+    expect(page).to have_content(@comment1.author.name)
+    expect(page).to have_content(@comment2.author.name)
+  end
+
+  it 'see the comment of each commentator left' do
+    expect(page).to have_content('Great post!')
+    expect(page).to have_content('I learned a lot.')
   end
 end
