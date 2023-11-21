@@ -1,32 +1,37 @@
 class CommentsController < ApplicationController
   load_and_authorize_resource
 
+  before_action :set_post
+
   def new
     @comment = Comment.new
   end
 
   def create
-    @comment = Comment.new(comment_params)
-    @post = Post.find(params[:post_id])
-    @comment.user_id = current_user.id
-    @comment.post_id = @post.id
+    @comment = current_user.comments.build(comment_params.merge(post: @post))
 
     if @comment.save
-      redirect_to user_post_path(user_id: @post.author_id, id: @post.id)
+      redirect_to user_post_path(@post.author, @post)
     else
-      render :new, alert: 'An error has occurred while creating the comment'
+      render :new
     end
   end
 
   def destroy
     @comment = Comment.find(params[:id])
     @post = @comment.post
-    @post.decrement!(:comment_counter)
-    @comment.destroy!
-    redirect_to user_post_path(author_id: @post.author_id, id: @post.id), notice: 'Comment successfully deleted'
+    @user = @post.author
+    @comment.destroy
+    @post.comments_counter -= 1
+
+    redirect_to user_post_path(@user, @post) if @post.save
   end
 
   private
+
+  def set_post
+    @post = Post.find(params[:post_id])
+  end
 
   def comment_params
     params.require(:comment).permit(:text)
