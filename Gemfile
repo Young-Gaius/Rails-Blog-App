@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '3.2.2'
+ruby '3.1.4'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem 'rails', '~> 7.1.1'
@@ -40,15 +40,20 @@ gem 'tzinfo-data', platforms: %i[windows jruby]
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', require: false
+gem 'bootstrap-will_paginate', '~> 1.0'
+gem 'will_paginate', '~> 3.3.0'
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  gem 'counter_culture', '~> 2.9'
   gem 'debug', platforms: %i[mri windows]
-  gem 'devise'
+  gem 'factory_bot_rails'
+  gem 'letter_opener'
   gem 'rspec-rails'
+  gem 'shoulda-matchers'
 end
 
 group :development do
@@ -65,15 +70,12 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem 'capybara'
+  gem 'rails-controller-testing'
   gem 'selenium-webdriver'
 end
-
+gem 'devise', '~> 4.8'
 gem 'rubocop', '>= 1.0', '< 2.0'
 
-gem 'rails-controller-testing'
-
-gem 'will_paginate', '~> 3.3'
+gem 'warden'
 
 gem 'cancancan'
-
-gem 'jwt'

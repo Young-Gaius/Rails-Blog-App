@@ -1,24 +1,38 @@
 Rails.application.routes.draw do
-  devise_for :users
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  # namespace :api do
+  #   namespace :v1 do
+  #     resources :users do
+  #       resources :user_posts, only: [:index]
+  #       resources :posts do
+  #         resources :post_comments, only: [:index]
+  #         resources :comments
+  #         resources :likes
+  #         post 'comments', to: 'add_comment#create'  # Adjusted route
+  #       end
+  #     end
+  #   end
+  # end
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
-  # get "up" => "rails/health#show", as: :rails_health_check
-  namespace :api do
-      post :auth, to: 'auth#create'
-      resources :users, only: [] do
-        resources :posts, only: [:index] do
-          resources :comments, only: [:index, :create]
-        end
-      end
-  end
-  # Defines the root path route ("/")
+  devise_for :users, controllers: { registrations: 'registrations', passwords: 'passwords',  sessions: 'sessions' }
+  
   root "users#index"
-  resources :users, only: [:index, :show] do
-    resources :posts, only: [:index, :show, :new, :create, :destroy] do
-      resources :comments, only: [:new, :create, :destroy]
-      resources :likes, only: [:create]
+  # root "devise/registrations#new"
+  resources :users do
+    resources :posts do
+      resources :comments
+      resources :likes
     end
   end
+
+  namespace :api do
+    namespace :v1 do
+      resources :users do
+        resources :posts do
+          get 'comments', to: 'comments#comments_for_post'
+        end
+      end
+      root 'users#index'
+    end
+  end
+  
 end

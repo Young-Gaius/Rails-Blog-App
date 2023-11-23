@@ -14,7 +14,7 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
-  # config.secret_key = '148109d37d95a352f10fbca211f1c8a72633e7f609860e6817dbfcfbec7acc91d86bef1c0d15352efadfe7a09d1ddaded81df274fb044c81406ac8dc7d62c561'
+  # config.secret_key = '58428e9c016a8acd9adf81e5bec68e1d8c28c475015930565e577dbe227468bdc1dcbd787ae549d6760a6acdc06e19f642b25fecaa957c954f698416a3033ec4'
 
   # ==> Controller configuration
   # Configure the parent class to the devise controllers.
@@ -58,6 +58,7 @@ Devise.setup do |config|
   # Configure which authentication keys should be case-insensitive.
   # These keys will be downcased upon creating or modifying a user and when used
   # to authenticate or find a user. Default is :email.
+  config.authentication_keys = [:email]
   config.case_insensitive_keys = [:email]
 
   # Configure which authentication keys should have whitespace stripped.
@@ -126,7 +127,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 12
 
   # Set up a pepper to generate the hashed password.
-  # config.pepper = 'a07c169ad6f6ed9ce3535aa62ce6ff0044e3fc70a3812007887891a3567bbc546b3c45c0673a7a2c69e3bebd1f06934319bc58a154e30a53b6c55de76e923328'
+  # config.pepper = '255670e33543d841f0a3973adb5c16be90b690c8812eb0ed52b938d5579c642c1ca6f99bbf913b25d88113f1e5ab11ba16671e05b2ea9a51e6eea699f6483457'
 
   # Send a notification to the original email when the user's email is changed.
   # config.send_email_changed_notification = false
@@ -143,7 +144,7 @@ Devise.setup do |config|
   # without confirming their account.
   # Default is 0.days, meaning the user cannot access the website without
   # confirming their account.
-  # config.allow_unconfirmed_access_for = 2.days
+  config.allow_unconfirmed_access_for = 2.days
 
   # A period that the user is allowed to confirm their account before their
   # token becomes invalid. For example, if set to 3.days, the user can confirm
@@ -157,7 +158,7 @@ Devise.setup do |config|
   # initial account confirmation) to be applied. Requires additional unconfirmed_email
   # db field (see migrations). Until confirmed, new email is stored in
   # unconfirmed_email column, and copied to email column on successful confirmation.
-  config.reconfirmable = true
+  config.reconfirmable = false
 
   # Defines which key will be used when confirming an account
   # config.confirmation_keys = [:email]
@@ -188,7 +189,7 @@ Devise.setup do |config|
   # ==> Configuration for :timeoutable
   # The time you want to timeout the user session without activity. After this
   # time the user will be asked for credentials again. Default is 30 minutes.
-  # config.timeout_in = 30.minutes
+  config.timeout_in = 30.minutes
 
   # ==> Configuration for :lockable
   # Defines which strategy will be used to lock an account.
@@ -252,7 +253,7 @@ Devise.setup do |config|
 
   # Set this configuration to false if you want /users/sign_out to sign out
   # only the current scope. By default, Devise signs out all scopes.
-  # config.sign_out_all_scopes = true
+  config.sign_out_all_scopes = false
 
   # ==> Navigation configuration
   # Lists the formats that should be treated as navigational. Formats like
@@ -263,7 +264,7 @@ Devise.setup do |config|
   # should add them to the navigational formats lists.
   #
   # The "*/*" below is required to match Internet Explorer requests.
-  # config.navigational_formats = ['*/*', :html, :turbo_stream]
+  config.navigational_formats = ['*/*', :html, :turbo_stream]
 
   # The default HTTP method used to sign out a resource. Default is :delete.
   config.sign_out_via = :delete
@@ -278,8 +279,7 @@ Devise.setup do |config|
   # change the failure app, you can configure them inside the config.warden block.
   #
   # config.warden do |manager|
-  #   manager.intercept_401 = false
-  #   manager.default_strategies(scope: :user).unshift :some_external_strategy
+  
   # end
 
   # ==> Mountable engine configurations
@@ -299,7 +299,7 @@ Devise.setup do |config|
   # ==> Hotwire/Turbo configuration
   # When using Devise with Hotwire/Turbo, the http status for error responses
   # and some redirects must match the following. The default in Devise for existing
-  # apps is `200 OK` and `302 Found` respectively, but new apps are generated with
+  # apps is `200 OK` and `302 Found respectively`, but new apps are generated with
   # these new defaults that match Hotwire/Turbo behavior.
   # Note: These might become the new default in future versions of Devise.
   config.responder.error_status = :unprocessable_entity
@@ -309,5 +309,5 @@ Devise.setup do |config|
 
   # When set to false, does not sign a user in automatically after their password is
   # changed. Defaults to true, so a user is signed in automatically after changing a password.
-  # config.sign_in_after_change_password = true
+  config.sign_in_after_change_password = true
 end

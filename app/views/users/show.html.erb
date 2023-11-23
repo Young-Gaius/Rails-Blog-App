@@ -1,38 +1,56 @@
-<%= link_to 'Back', users_path %>
-
-<h1>Specific User</h1>
-
-<button>
-  <%= link_to "New post", new_user_post_path(@user), class: "back" %>
-</button>
-
-<div class="user-card">
-  <%= image_tag(@user.photo, alt: @user.name, class: "user-photo") if @user.photo.present? %>
-  <div class="user-details">
-    <h2><%= @user.name %></h2>
-    <p>Number of posts: <%= @user.posts.count %></p>
-  </div>
-</div>
-
-<div class="user-bio">
-  <h2>Bio</h2>
-  <p>
-    <%= @user.bio %>
-  </p>
-</div>
-
-<div class="user-posts">
-  <% @user.posts.limit(3).each do |post| %>
-    <div class="post">
-      <h2><%= link_to "#{post.title}", user_post_path(post.author, post) %></h2>
-      <p><%= post.text %></p>
-      <p class="counter">Comments: <%= post.comments_counter %>, Likes: <%= post.likes_counter %></p>
+<div class="sub-container pb-5" >
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="col-md-4">
+            <img src="<%= @user.photo %>" class="img-fluid img-thumbnail rounded-start" alt=<%= @user.name %>>
+        </div>
+            <%= link_to user_posts_path(@user), class: 'no-link col-md-8' do %>
+            <div class="card-body">
+             <h5 class="card-title"><%= @user.name %></h5>
+             <p class="card-text text-end">Number of posts: <%= @user.posts_counter %> </p>
+            </div>
+            <% end %>
+        </div>
     </div>
-  <% end %>
 
-  <% if @user.posts.count > 3 %>
-    <button class="see-all-posts">
-      <%= link_to "See all posts", user_posts_path(@user), class: "back" %>
-    </button>
-  <% end %>
+    <div class="card mb-2">
+    <div class="card-body">
+        <h6 class="card-title">Bio</h6>
+        <p class="card-text"><%= @user.bio %></p>
+    </div>
+    </div>
+
+    <% if @recent_posts.present? %>
+    <% @recent_posts.each do |post| %>
+    <div class="card mb-2">
+        <%= link_to user_post_path(@user, post), class: 'no-link' do %>
+        <div class="card-body">
+            <h6 class="card-title"><%= post.title %> </h6>
+            <p class="card-text"><%= post.text %> </p>
+            <p class="card-link text-end">Comment: <%= post.comments_counter || 0 %>, Likes: <%= post.likes_counter || 0 %> </p>
+        </div>
+        <% end %>
+
+         <div class="comment-like">
+            <%# <%= link_to 'Add Comment',  new_user_post_comment_path(@user, post), class: 'col-md-3 m-3 btn btn-secondary comment-btn' %> 
+            <%= link_to 'Add Comment', new_user_post_comment_path(@user, post), class: 'button-link' %>
+            <%= button_to 'Like',  user_post_likes_path(@user, post), method: :post, class: 'button-link'%>
+                 
+        </div>
+
+    </div>
+    <% end %>
+
+     <div class="text-center">
+        <%= link_to 'See all Posts', user_posts_path(user_id: @user.id), class: 'btn btn-primary' %>
+    </div>
+
+    <% else %>
+    <p style="color:blue">There are currently no posts for this user in the system.</p>
+    <% end %>
+
+    <div class="text-center mt-3">
+        <%= link_to 'Create New Post', new_user_post_path(user_id: @user) , class: 'btn btn-success' %>
+    </div>
+   
 </div>
