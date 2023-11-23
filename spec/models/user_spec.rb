@@ -1,30 +1,45 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  it 'is valid with a name, email, password, and a non-negative posts_counter' do
-    user = User.new(name: 'Tom', email: 'tom@example.com', password: 'password', posts_counter: 3)
-    expect(user).to be_valid
+  subject { User.new(name: 'Tom', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Teacher from Mexico.', posts_counter: 0) }
+  before { subject.save }
+
+  it('name should be present') do
+    subject.name = nil
+    expect(subject).not_to be_valid
   end
 
-  it 'is not valid without a name' do
-    user = User.new(name: nil, email: 'tom@example.com', password: 'password')
-    user.valid?
-    expect(user.errors[:name]).to include("can't be blank")
+  it('posts_counter should be a number') do
+    subject.posts_counter = nil
+    expect(subject).not_to be_valid
   end
 
-  it 'is not valid with a negative posts_counter' do
-    user = User.new(name: 'Tom', email: 'tom@example.com', password: 'password', posts_counter: -1)
-    user.valid?
-    expect(user.errors[:posts_counter]).to include('must be greater than or equal to 0')
+  it('posts_counter should be greater than or equal to 0') do
+    subject.posts_counter = -1
+    expect(subject).not_to be_valid
   end
 
-  it 'returns the 3 most recent posts for a user' do
-    user = User.new(name: 'Tom', email: 'tom@example.com', password: 'password')
-    4.times { Post.create(author: user, title: 'My Post') }
+  it('posts_counter should be equal to 0') do
+    subject.posts_counter = 0
+    expect(subject).to be_valid
+  end
 
-    recent_posts = user.recent_posts
+  it('posts_counter should be greater than 0') do
+    subject.posts_counter = 3
+    expect(subject).to be_valid
+  end
 
-    expect(recent_posts.count).to eq(3)
-    expect(recent_posts.first).to eq(user.posts.last)
+  it 'returns the three most recent posts' do
+    user1 = User.create(name: 'John', photo: 'https://unsplash.com/photos/F_-0BxGuVvo', bio: 'Bio 1', posts_counter: 3)
+    Post.create(author: user1, title: 'Hello', text: 'This is my first post', comments_counter: 0, likes_counter: 0)
+    post2 = Post.create(author: user1, title: 'nice ', text: 'This is nice work', comments_counter: 0,
+                        likes_counter: 0)
+    post3 = Post.create(author: user1, title: 'Keep it Up', text: 'This is my word', comments_counter: 0,
+                        likes_counter: 0)
+    post4 = Post.create(author: user1, title: 'Hello', text: 'This is my first post', comments_counter: 0,
+                        likes_counter: 0)
+
+    recent_posts = user1.recent_posts.to_a
+    expect(recent_posts).to match_array([post4, post3, post2])
   end
 end

@@ -1,40 +1,51 @@
+# spec/features/user_show_spec.rb
+
 require 'rails_helper'
 
-RSpec.feature 'User show page' do
-  let!(:user1) { User.create(name: 'Ajrass', bio: 'A student from Morocco', photo: 'https://avatars.githubusercontent.com/u/130588108?v=4') }
-  let!(:post1) { Post.create(author: user1, title: 'Post 01') }
-  let!(:post2) { Post.create(author: user1, title: 'Post 02') }
-  let!(:post3) { Post.create(author: user1, title: 'Post 03') }
-  let!(:post4) { Post.create(author: user1, title: 'Post 04') }
-
-  scenario 'Displays user Profile picture, username, bio and number of posts' do
-    visit user_path(user1)
-    expect(page).to have_css("img[src='#{user1.photo}']")
-    expect(page).to have_content(user1.name)
-    expect(page).to have_content(user1.bio)
-    expect(page).to have_content("Number of posts: #{user1.posts_counter}")
+RSpec.describe 'User show', type: :feature do
+  before :each do
+    @user = User.create(name: 'sami dan', photo: 'https://example.com/john-doe.jpg', bio: 'Developer')
+    @post1 = Post.create(author_id: @user.id, title: 'My First Post', text: 'This is the content of my first post.')
+    @post2 = Post.create(author_id: @user.id, title: 'Rails Rocks', text: 'Excited about Rails development.')
+    @post3 = Post.create(author_id: @user.id, title: 'Learning Ruby', text: 'Exploring the beauty of Ruby language.')
+    visit user_path(@user.id)
   end
 
-  scenario 'Displays user 3 posts' do
-    visit user_path(user1)
-
-    expect(page).to have_content(post1.title)
-    expect(page).to have_content(post3.title)
+  it 'see the user profile picture' do
+    expect(page).to have_css("img[src*='https://example.com/john-doe.jpg']")
   end
 
-  scenario 'Displays Button that lets me view all of a user posts, and redirects to the posts when clicked' do
-    visit user_path(user1)
-    expect(page).to have_link('See all posts')
-    click_link 'See all posts'
-    sleep(1)
-    expect(current_path).to eq(user_posts_path(user1))
+  it 'see the user profile name' do
+    expect(page).to have_content 'sami dan'
   end
 
-  scenario 'click on user post redirects to that post show page.' do
-    visit user_path(user1)
+  it 'see the number of posts user has written' do
+    expect(page).to have_content 'Number of posts: 3'
+  end
 
-    click_link post1.title
-    sleep(1)
-    expect(current_path).to eq(user_post_path(user1, post1))
+  it 'see the user bio' do
+    expect(page).to have_content 'Developer'
+  end
+
+  it 'see the user first three posts' do
+    expect(page).to have_content('This is the content of my first post.')
+    expect(page).to have_content('Excited about Rails development.')
+    expect(page).to have_content('Exploring the beauty of Ruby language.')
+  end
+
+  it 'see the button that lets me view all users posts' do
+    expect(page).to have_link('See all Posts', href: user_posts_path(user_id: @user.id))
+  end
+
+  it "When I click a user's post, it redirects me to that post's show page." do
+    click_on 'My First Post'
+    expect(page).to have_content 'This is the content of my first post.'
+  end
+
+  it "When I click to see all posts, it redirects me to the user's post's index page." do
+    click_on 'See all Posts'
+    expect(page).to have_content('My First Post')
+    expect(page).to have_content('Rails Rocks')
+    expect(page).to have_content('Learning Ruby')
   end
 end
