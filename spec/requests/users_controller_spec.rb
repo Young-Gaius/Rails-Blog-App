@@ -1,3 +1,5 @@
+# spec/requests/users_controller_spec.rb
+
 require 'rails_helper'
 
 RSpec.describe UsersController, type: :request do
@@ -5,38 +7,21 @@ RSpec.describe UsersController, type: :request do
     it 'returns a successful response' do
       get users_path
       expect(response).to have_http_status(:success)
-    end
-
-    it 'renders the index template' do
-      get users_path
       expect(response).to render_template(:index)
-    end
-
-    it 'includes correct placeholder text in the response body' do
-      get users_path
-      expect(response.body).to include('list of all users')
+      expect(response.body).to include('There are no users currently in the system.')
     end
   end
 
   describe 'GET #show' do
-    let!(:user) { User.create(name: 'John Doe', photo: 'example.jpg', bio: 'Lorem ipsum') }
+    let(:user) { User.create(name: 'Example User', photo: 'example.jpg', bio: 'Example Bio', posts_counter: 0) }
 
     it 'returns a successful response' do
       get user_path(user)
       expect(response).to have_http_status(:success)
-    end
-
-    it 'renders the show template' do
-      get user_path(user)
       expect(response).to render_template(:show)
-    end
-
-    it 'includes correct placeholder text in the response body' do
-      get user_path(user)
-      expect(response.body).to include('User Profile')
-      expect(response.body).to include("Name: #{user.name}")
-      expect(response.body).to include("Photo: #{user.photo}")
-      expect(response.body).to include("Bio: #{user.bio}")
+      expect(response.body).to include('Number of posts: 0')
+      expect(response.body).to include('Example Bio')
+      expect(response.body).to include('There are currently no posts for this user in the system.')
     end
   end
 end

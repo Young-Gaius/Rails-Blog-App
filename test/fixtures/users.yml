@@ -1,13 +1,17 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
-  photo: MyText
+  user_name: MyString
+  photo_url: MyString
   bio: MyText
+  updated_at: 2023-11-02 13:07:42
+  created_at: 2023-11-02 13:07:42
   post_counter: 1
 
 two:
-  name: MyString
-  photo: MyText
+  user_name: MyString
+  photo_url: MyString
   bio: MyText
+  updated_at: 2023-11-02 13:07:42
+  created_at: 2023-11-02 13:07:42
   post_counter: 1
